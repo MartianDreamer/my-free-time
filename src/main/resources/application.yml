@@ -1,0 +1,16 @@
+my-free-time:
+  config:
+    checkin-before-h: 9
+    checkin-before-m: 0
+    checkout-after-h: 18
+    checkout-after-m: 55
+    checkin: "false"
+    checkout: "true"
+    max-variant: 15
+
+quarkus:
+  http:
+    port: 22112
+  rest-client:
+    mytime:
+      uri: ${mytime_ws_url}

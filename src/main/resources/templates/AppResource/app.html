@@ -1,0 +1,211 @@
+{@me.martiandreamer.model.Configuration config}
+{@me.martiandreamer.control.AppService appService}
+{@me.martiandreamer.control.AbsentDayService absentDayService}
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href='https://fonts.googleapis.com/css?family=JetBrains Mono' rel='stylesheet'>
+    <style>
+        .margin {
+            margin: 8px;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', serif;
+            font-size: 18px;
+        }
+
+        .button {
+            margin: 5px;
+            padding: 5px;
+            border-radius: 5px;
+            cursor: default;
+            text-align: center;
+        }
+
+        .button:hover {
+            opacity: 0.9;
+        }
+
+        .info {
+            margin: 5px;
+            cursor: default;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: bolder;
+            margin-bottom: 15px;
+        }
+
+        .green {
+            background-color: #198754
+        }
+
+        .red {
+            background-color: #dc3545
+        }
+
+        .yellow {
+            background-color: #ffc107
+        }
+
+        input[type="text"], input[type="date"], select {
+            border-radius: 10px;
+            border: solid #adb5bd 2px;
+            padding: 2px 2px 2px 5px;
+        }
+    </style>
+</head>
+<body>
+<div style="display: flex">
+    <div style="margin-right: 10px; padding: 10px">
+        <div class="title">Config values</div>
+        <div class="margin"><label for="checkin">Checkin </label><input id="checkin" type="checkbox"
+                                                                        {#if config.getCheckin()}checked{/if}/></div>
+        <div class="margin"><label for="checkout">Checkout </label><input id="checkout" type="checkbox"
+                                                                          {#if config.getCheckout()}checked{/if}/></div>
+        <div class="margin"><label for="checkinBefore">Checkin before: </label><input id="checkinBefore" type="text"
+                                                                                      value="{config.getCheckinBeforeH()}:{config.getCheckinBeforeM()}"/>
+        </div>
+        <div class="margin"><label for="checkoutAfter">Checkout after: </label><input id="checkoutAfter" type="text"
+                                                                                      value="{config.getCheckoutAfterH()}:{config.getCheckoutAfterM()}"/>
+        </div>
+        <div class="margin"><label for="variant">Max variant in minus: </label><input id="variant" type="text"
+                                                                                      value="{config.getMaxVariantInMinus()}"/>
+        </div>
+        <div class="info">Check in at {appService.getNextCheckinInvocationString()}</div>
+        <div class="info">Check out at {appService.getNextCheckoutInvocationString()}</div>
+        <div style="margin-top: 20px; display: flex">
+            <div class="button green" onclick="start()">
+                Start
+            </div>
+            <div class="button red" onclick="stop()">
+                Stop
+            </div>
+            <div class="button yellow" onclick="updateConfig()">
+                Update config
+            </div>
+        </div>
+    </div>
+    <div style="padding: 10px">
+        <div class="title">Absent days</div>
+        {#for absentDay in absentDayService.getAbsentDays()}
+            <div class="info">
+                <div>{absentDay.get(0)} - {absentDay.get(1)}</div>
+                <div class="button red" onclick="removeAbsentDay('{absentDay.get(0)}', '{absentDay.get(1)}')">Delete
+                </div>
+            </div>
+        {/for}
+        <div style="align-items: baseline">
+            <div class="title">Add absent days</div>
+            <label for="date"> Date:</label><input id="date" type="date"/>
+            <label for="absent-type"> Type</label>
+            <select id="absent-type">
+                <option value="full">Full day</option>
+                <option value="morning">Morning</option>
+                <option value="afternoon">Afternoon</option>
+            </select>
+            <div class="button green" style="width: 40px; margin-top: 20px" onclick="addAbsentDay()">
+                Add
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    const root = "http://127.0.0.1:{config.getPort()}";
+
+    function start() {
+        fetch(root + "/rest?command=START", {
+            method: "POST",
+            mode: "no-cors"
+        })
+            .finally(() => location.reload())
+    }
+
+    function stop() {
+        fetch(root + "/rest?command=STOP", {
+            method: "POST",
+            mode: "no-cors"
+        })
+            .finally(() => location.reload())
+    }
+
+    function splitTime(time) {
+        const numbers = time.split(":");
+        if (numbers.length !== 2) {
+            throw err("invalid format " + time + ", valid format is [h]h:mm");
+        }
+        return [Number.parseInt(numbers[0]), Number.parseInt(numbers[1])];
+    }
+
+    function updateConfig() {
+        const maxVariantInMinus = Number.parseInt(document.getElementById("variant").value);
+        const [checkinBeforeH, checkinBeforeM] = splitTime(document.getElementById("checkinBefore").value);
+        const [checkoutAfterH, checkoutAfterM] = splitTime(document.getElementById("checkoutAfter").value);
+        const checkin = document.getElementById("checkin").checked;
+        const checkout = document.getElementById("checkout").checked;
+        const body = {
+            maxVariantInMinus,
+            checkin,
+            checkout,
+            checkinBeforeH,
+            checkinBeforeM,
+            checkoutAfterH,
+            checkoutAfterM
+        }
+
+        console.log(body);
+
+        fetch(root + "/rest/config", {
+            method: "POST",
+            mode: "no-cors",
+            body: JSON.stringify(body)
+        })
+            .finally(() => location.reload());
+    }
+
+    function removeAbsentDay(from, to) {
+        fetch(root + "/rest/absent?from=" + from + "&to=" + to + "&remove=true", {
+            method: "POST",
+            mode: 'no-cors'
+        })
+            .finally(() => location.reload());
+    }
+
+    function addAbsentDay() {
+        const date = document.getElementById("date").value;
+        const [year, month, day] = date.split("-");
+        const absentDay = ((day, month, year) => {
+            return day + "-" + month + "-" + year;
+        })(day, month, year);
+
+        const type = document.getElementById("absent-type").value;
+        const fromTo = {
+            full: [
+                "00:00:00 " + absentDay, "23:59:59 " + absentDay
+            ],
+            morning: [
+                "00:00:00 " + absentDay, "12:00:00 " + absentDay
+            ],
+            afternoon: [
+                "12:00:00 " + absentDay, "23:59:59 " + absentDay
+            ]
+        }
+        const [from, to] = fromTo[type];
+        fetch(root + "/rest/absent?from=" + from + "&to=" + to, {
+            method: "POST",
+            mode: 'no-cors'
+        })
+            .finally(() => location.reload());
+    }
+</script>
+</html>

@@ -1,0 +1,50 @@
+package me.martiandreamer.control;
+
+import me.martiandreamer.adapter.MyTimeAdapter;
+import me.martiandreamer.model.CheckStatus;
+import me.martiandreamer.model.EmployeeInfo;
+import jakarta.enterprise.context.ApplicationScoped;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+
+import java.util.List;
+
+@ApplicationScoped
+@Slf4j
+public class CommunicationService {
+
+    private final MyTimeAdapter myTimeAdapter;
+    private EmployeeInfo employeeInfo;
+
+    public CommunicationService(@RestClient MyTimeAdapter myTimeAdapter) {
+        this.myTimeAdapter = myTimeAdapter;
+    }
+
+
+    public void check() {
+        EmployeeInfo employeeInfo = getEmployeeInfo();
+        myTimeAdapter.checkInOut(employeeInfo.id(), employeeInfo.token());
+    }
+
+
+    public EmployeeInfo getEmployeeInfo() {
+        if (employeeInfo != null) {
+            return employeeInfo;
+        }
+        String user = getWindowsAccount();
+        List<String> response = myTimeAdapter.getAccessTokenOfAnEmployee(user);
+        if (response.size() < 2) {
+            throw new RuntimeException("unexpected response");
+        }
+        employeeInfo = new EmployeeInfo(response.get(0), response.get(1));
+        return employeeInfo;
+    }
+
+    public CheckStatus checkStatus() {
+        return myTimeAdapter.getCurrentStatus(getEmployeeInfo().id());
+    }
+
+    private String getWindowsAccount() {
+        return System.getProperty("user.name");
+    }
+}
