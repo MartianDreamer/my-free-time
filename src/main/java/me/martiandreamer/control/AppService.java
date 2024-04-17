@@ -24,6 +24,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static me.martiandreamer.model.AbsentDay.AbsentType.AFTERNOON;
+import static me.martiandreamer.model.AbsentDay.AbsentType.MORNING;
+
 @ApplicationScoped
 @RequiredArgsConstructor
 public class AppService {
@@ -88,8 +91,8 @@ public class AppService {
         }
         if (!absentDayService.isNotAbsentDay()) {
             AbsentDay absentDay = absentDayService.getAbsentDay(LocalDateTime.now()).get();
-            LocalDateTime at1Pm30Today = LocalDate.now().atTime(13, 30);
-            if (absentDay.to().isBefore(at1Pm30Today)) {
+            if (absentDay.type().equals(MORNING)) {
+                LocalDateTime at1Pm30Today = LocalDate.now().atTime(13, 30);
                 long nextInvocationDelay = calculateNextInvocationDelay(at1Pm30Today) - randomVariant;
                 setupNewScheduledTask(this::doCheckinAndRescheduleJob, nextInvocationDelay, this::getCheckinScheduledFuture, this::setCheckinScheduledFuture, this::setNextCheckinInvocation);
                 return;
@@ -113,9 +116,9 @@ public class AppService {
         LocalDateTime tomorrowInvocationTime = tomorrow.atTime(configuration.getCheckoutAfterH(), configuration.getCheckoutAfterM());
         Optional<AbsentDay> optionalAbsentTomorrow = absentDayService.getAbsentDay(tomorrowInvocationTime);
         if (optionalAbsentTomorrow.isPresent()) {
-            LocalDateTime at12PmTomorrow = tomorrow.atTime(12, 0);
             AbsentDay absentTomorrow = optionalAbsentTomorrow.get();
-            if (absentTomorrow.from().isAfter(at12PmTomorrow) || absentTomorrow.from().isEqual(at12PmTomorrow)) {
+            if (absentTomorrow.type().equals(AFTERNOON)) {
+                LocalDateTime at12PmTomorrow = tomorrow.atTime(12, 0);
                 long nextInvocationDelay = calculateNextInvocationDelay(at12PmTomorrow) + randomVariant;
                 setupNewScheduledTask(this::doCheckoutAndRescheduleJob, nextInvocationDelay, this::getCheckoutScheduledFuture, this::setCheckoutScheduledFuture, this::setNextCheckoutInvocation);
                 return;

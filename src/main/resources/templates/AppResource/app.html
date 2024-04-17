@@ -1,6 +1,7 @@
 {@me.martiandreamer.model.Configuration config}
 {@me.martiandreamer.control.AppService appService}
 {@me.martiandreamer.control.AbsentDayService absentDayService}
+{@me.martiandreamer.model.CheckStatus checkStatus}
 <html lang="en-US">
 <head>
     <meta charset="UTF-8">
@@ -81,8 +82,10 @@
         <div class="margin"><label for="variant">Max variant in minus: </label><input id="variant" type="text"
                                                                                       value="{config.getMaxVariantInMinus()}"/>
         </div>
-        <div class="info">Check in at {appService.getNextCheckinInvocationString()}</div>
-        <div class="info">Check out at {appService.getNextCheckoutInvocationString()}</div>
+        <div class="info">Check in at {intime}</div>
+        <div class="info">Check out at {outtime}</div>
+        <div class="info">Scheduled check in at {appService.getNextCheckinInvocationString()}</div>
+        <div class="info">Scheduled check out at {appService.getNextCheckoutInvocationString()}</div>
         <div style="margin-top: 20px; display: flex">
             <div class="button green" onclick="start()">
                 Start
@@ -109,9 +112,9 @@
             <label for="date"> Date:</label><input id="date" type="date"/>
             <label for="absent-type"> Type</label>
             <select id="absent-type">
-                <option value="full">Full day</option>
-                <option value="morning">Morning</option>
-                <option value="afternoon">Afternoon</option>
+                <option value="FULL">Full day</option>
+                <option value="MORNING">Morning</option>
+                <option value="AFTERNOON">Afternoon</option>
             </select>
             <div class="button green" style="width: 40px; margin-top: 20px" onclick="addAbsentDay()">
                 Add
@@ -173,8 +176,8 @@
             .finally(() => location.reload());
     }
 
-    function removeAbsentDay(from, to) {
-        fetch(root + "/rest/absent?from=" + from + "&to=" + to + "&remove=true", {
+    function removeAbsentDay(date, type) {
+        fetch(root + "/rest/absent?date=" + date + "&type=" + type + "&remove=true", {
             method: "POST",
             mode: 'no-cors'
         })
@@ -189,19 +192,7 @@
         })(day, month, year);
 
         const type = document.getElementById("absent-type").value;
-        const fromTo = {
-            full: [
-                "00:00:00 " + absentDay, "23:59:59 " + absentDay
-            ],
-            morning: [
-                "00:00:00 " + absentDay, "12:00:00 " + absentDay
-            ],
-            afternoon: [
-                "12:00:00 " + absentDay, "23:59:59 " + absentDay
-            ]
-        }
-        const [from, to] = fromTo[type];
-        fetch(root + "/rest/absent?from=" + from + "&to=" + to, {
+        fetch(root + "/rest/absent?date=" + absentDay + "&type=" + type, {
             method: "POST",
             mode: 'no-cors'
         })

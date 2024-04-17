@@ -4,6 +4,7 @@ import me.martiandreamer.model.AbsentDay;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,8 @@ public class AbsentDayService {
 
     public void removeExpiredAbsentDay() {
         absentDays.removeIf(e -> {
-            LocalDateTime now = LocalDateTime.now();
-            return e.to().isBefore(now);
+            LocalDate today = LocalDate.now();
+            return e.date().isBefore(today);
         });
     }
 
