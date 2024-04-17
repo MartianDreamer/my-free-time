@@ -44,7 +44,12 @@ public class CommunicationService {
         return myTimeAdapter.getCurrentStatus(getEmployeeInfo().id());
     }
 
+    @SuppressWarnings("ReassignedVariable")
     private String getWindowsAccount() {
-        return System.getProperty("user.name");
+        String username = System.getProperty("user.name");
+        if (username == null) {
+            username = System.getProperty("user_name");
+        }
+        return username;
     }
 }
