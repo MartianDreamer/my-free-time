@@ -2,6 +2,7 @@ package me.martiandreamer.boundary;
 
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
+import io.smallrye.common.annotation.Blocking;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -33,6 +34,7 @@ public class AppResource {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
+    @Blocking
     public TemplateInstance app() {
         CheckStatus checkStatus = communicationService.checkStatus();
         String intime = LocalDate.now().atStartOfDay().plusSeconds(checkStatus.intime()).format(DATE_TIME_FORMATTER);
