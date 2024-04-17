@@ -79,8 +79,11 @@ public class AppService {
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     private void doCheckinAndRescheduleJob() {
         long randomVariant = Math.round(Math.random() * configuration.getMaxVariantInMinus() * 60L);
-        if (isNotSaturdayAndSunday() && absentDayService.isNotAbsentDay()) {
-            communicationService.check();
+        if (isNotSaturdayAndSunday() && absentDayService.isNotAbsentDay() && configuration.getCheckin()) {
+            CheckStatus currentStatus = communicationService.checkStatus();
+            if (currentStatus.intime() == 0) {
+                communicationService.check();
+            }
         }
         if (!absentDayService.isNotAbsentDay()) {
             AbsentDay absentDay = absentDayService.getAbsentDay(LocalDateTime.now()).get();
@@ -99,9 +102,9 @@ public class AppService {
 
     private void doCheckoutAndRescheduleJob() {
         long randomVariant = Math.round(Math.random() * configuration.getMaxVariantInMinus() * 60L);
-        if (isNotSaturdayAndSunday() && absentDayService.isNotAbsentDay()) {
+        if (isNotSaturdayAndSunday() && absentDayService.isNotAbsentDay() && configuration.getCheckout()) {
             CheckStatus currentStatus = communicationService.checkStatus();
-            if (currentStatus.previousAction().equals(CheckStatus.CHECKIN)) {
+            if (currentStatus.intime() != 0) {
                 communicationService.check();
             }
         }
