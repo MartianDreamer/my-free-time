@@ -11,7 +11,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import lombok.RequiredArgsConstructor;
 
-@Path("/my-free-time")
+@Path("/")
 @RequiredArgsConstructor
 public class AppResource {
 
