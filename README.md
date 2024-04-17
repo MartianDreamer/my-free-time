@@ -2,7 +2,7 @@
 
 A better APIs (with a simple stupid client) for my company time management tool
 
-put mytimews url to environment variable "mytime.ws.url"
+put mytimews url to environment variable "mytime_ws_url"
 
 if you're absent in the morning it will check in at 13:30
 
