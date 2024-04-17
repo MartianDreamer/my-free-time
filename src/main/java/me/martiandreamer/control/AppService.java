@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -110,6 +111,16 @@ public class AppService {
         }
         LocalDate tomorrow = LocalDate.now().plusDays(1);
         LocalDateTime tomorrowInvocationTime = tomorrow.atTime(configuration.getCheckoutAfterH(), configuration.getCheckoutAfterM());
+        Optional<AbsentDay> optionalAbsentTomorrow = absentDayService.getAbsentDay(tomorrowInvocationTime);
+        if (optionalAbsentTomorrow.isPresent()) {
+            LocalDateTime at12PmTomorrow = tomorrow.atTime(12, 0);
+            AbsentDay absentTomorrow = optionalAbsentTomorrow.get();
+            if (absentTomorrow.from().isAfter(at12PmTomorrow) || absentTomorrow.from().isEqual(at12PmTomorrow)) {
+                long nextInvocationDelay = calculateNextInvocationDelay(at12PmTomorrow) + randomVariant;
+                setupNewScheduledTask(this::doCheckoutAndRescheduleJob, nextInvocationDelay, this::getCheckoutScheduledFuture, this::setCheckoutScheduledFuture, this::setNextCheckoutInvocation);
+                return;
+            }
+        }
         long nextInvocationDelay = calculateNextInvocationDelay(tomorrowInvocationTime) + randomVariant;
         setupNewScheduledTask(this::doCheckoutAndRescheduleJob, nextInvocationDelay, this::getCheckoutScheduledFuture, this::setCheckoutScheduledFuture, this::setNextCheckoutInvocation);
     }
