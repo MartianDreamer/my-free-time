@@ -1,11 +1,10 @@
 package me.martiandreamer.boundary;
 
 import me.martiandreamer.control.AbsentDayService;
-import me.martiandreamer.control.AppService;
+import me.martiandreamer.control.ScheduledCheckService;
 import me.martiandreamer.control.CommunicationService;
 import me.martiandreamer.model.AbsentDay;
 import me.martiandreamer.model.Configuration;
-import me.martiandreamer.model.NextInvocationTimestamp;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.Consumes;
@@ -28,7 +27,7 @@ import java.time.LocalDate;
 public class AppRestResource {
 
     private final Configuration configuration;
-    private final AppService appService;
+    private final ScheduledCheckService scheduledCheckService;
     private final ObjectMapper objectMapper;
     private final AbsentDayService absentDayService;
     private final CommunicationService communicationService;
@@ -51,17 +50,17 @@ public class AppRestResource {
 
     @POST
     @Path("/")
-    public Response run(@RestQuery("command") @DefaultValue("START") AppService.COMMAND command) {
+    public Response run(@RestQuery("command") @DefaultValue("START") ScheduledCheckService.COMMAND command) {
         return switch (command) {
-            case START -> Response.ok(appService.start()).build();
-            case STOP -> Response.ok(appService.stop()).build();
+            case START -> Response.ok(scheduledCheckService.start()).build();
+            case STOP -> Response.ok(scheduledCheckService.stop()).build();
         };
     }
 
     @GET
     @Path("/next-invocation")
     public Response getNextInvocation() {
-        return Response.ok(new NextInvocationTimestamp(appService.getNextCheckinInvocation(), appService.getNextCheckoutInvocation())).build();
+        return Response.ok(scheduledCheckService.getScheduledCheckTime()).build();
     }
 
     @POST

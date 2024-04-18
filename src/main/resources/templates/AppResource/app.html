@@ -1,5 +1,5 @@
 {@me.martiandreamer.model.Configuration config}
-{@me.martiandreamer.control.AppService appService}
+{@me.martiandreamer.control.ScheduledCheckService scheduledCheckService}
 {@me.martiandreamer.control.AbsentDayService absentDayService}
 {@me.martiandreamer.model.CheckStatus checkStatus}
 <html lang="en-US">
@@ -84,11 +84,11 @@
         </div>
         <div class="info">Check in at {intime}</div>
         <div class="info">Check out at {outtime}</div>
-        {#if appService.getNextCheckinInvocationString() != null}
-            <div class="info">Scheduled check in at {appService.getNextCheckinInvocationString()}</div>
+        {#if scheduledCheckService.getNextCheckinInvocationString() != null}
+            <div class="info">Scheduled check in at {scheduledCheckService.getNextCheckinInvocationString()}</div>
         {/if}
-        {#if appService.getNextCheckoutInvocationString() != null}
-            <div class="info">Scheduled check out at {appService.getNextCheckoutInvocationString()}</div>
+        {#if scheduledCheckService.getNextCheckoutInvocationString() != null}
+            <div class="info">Scheduled check out at {scheduledCheckService.getNextCheckoutInvocationString()}</div>
         {/if}
         <div style="margin-top: 20px; display: flex">
             <div class="button green" onclick="start()">

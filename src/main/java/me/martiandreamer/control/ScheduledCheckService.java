@@ -1,6 +1,7 @@
 package me.martiandreamer.control;
 
 import me.martiandreamer.model.AbsentDay;
+import me.martiandreamer.model.CheckInCheckOutTime;
 import me.martiandreamer.model.CheckStatus;
 import me.martiandreamer.model.Configuration;
 import jakarta.annotation.PostConstruct;
@@ -29,7 +30,7 @@ import static me.martiandreamer.model.AbsentDay.AbsentType.MORNING;
 
 @ApplicationScoped
 @RequiredArgsConstructor
-public class AppService {
+public class ScheduledCheckService {
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy");
     private final Configuration configuration;
     private final CommunicationService communicationService;
@@ -42,10 +43,8 @@ public class AppService {
     @Setter(AccessLevel.PRIVATE)
     private ScheduledFuture<?> checkoutScheduledFuture;
     @Setter(AccessLevel.PRIVATE)
-    @Getter
     private LocalDateTime nextCheckinInvocation;
     @Setter(AccessLevel.PRIVATE)
-    @Getter
     private LocalDateTime nextCheckoutInvocation;
 
     @PostConstruct
@@ -177,6 +176,15 @@ public class AppService {
             return null;
         }
         return nextCheckoutInvocation.format(DATE_TIME_FORMATTER);
+    }
+
+    public CheckInCheckOutTime getScheduledCheckTime() {
+        if (nextCheckinInvocation != null && nextCheckoutInvocation != null) {
+            double totalWorkingHour = Duration.between(nextCheckinInvocation, nextCheckoutInvocation).toSeconds() / 3600d;
+            return new CheckInCheckOutTime(nextCheckinInvocation, nextCheckoutInvocation, totalWorkingHour);
+        } else {
+            return new CheckInCheckOutTime(nextCheckinInvocation, nextCheckoutInvocation, 0);
+        }
     }
 
     public enum COMMAND {
