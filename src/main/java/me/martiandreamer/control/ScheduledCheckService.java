@@ -147,11 +147,12 @@ public class ScheduledCheckService {
         return Duration.between(now, expectedDayMoment).get(ChronoUnit.SECONDS);
     }
 
+    @SuppressWarnings("ReassignedVariable")
     private long calculateNextInvocationDelay(int configuredH, int configureM) {
         LocalDate today = LocalDate.now();
         long result = calculateNextInvocationDelay(today.atTime(configuredH, configureM));
         if (result < 0) {
-            calculateNextInvocationDelay(today.plusDays(1).atTime(configuredH, configureM));
+            result = calculateNextInvocationDelay(today.plusDays(1).atTime(configuredH, configureM));
         }
         return result;
     }
