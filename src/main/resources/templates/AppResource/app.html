@@ -83,8 +83,12 @@
         <div class="margin"><label for="variant">Max variant in minus: </label><input id="variant" type="text"
                                                                                       value="{config.getMaxVariantInMinus()}"/>
         </div>
-        <div class="info">Check in at {intime}</div>
-        <div class="info">Check out at {outtime}</div>
+        {#if ! intime.equals("00:00")}
+            <div class="info">Check in at {intime}</div>
+        {/if}
+        {#if ! outtime.equals("00:00")}
+            <div class="info">Check out at {outtime}</div>
+        {/if}
         {#if scheduledCheckService.getNextCheckinInvocationString() != null}
             <div class="info">Scheduled check in at {scheduledCheckService.getNextCheckinInvocationString()}</div>
         {/if}
