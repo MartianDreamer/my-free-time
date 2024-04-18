@@ -9,6 +9,9 @@ my-free-time:
     max-variant: 15
 
 quarkus:
+  package:
+    type: uber-jar
+    add-runner-suffix: false
   http:
     port: 22112
   rest-client:
