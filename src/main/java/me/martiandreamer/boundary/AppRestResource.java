@@ -1,6 +1,7 @@
 package me.martiandreamer.boundary;
 
 import me.martiandreamer.control.AbsentDayService;
+import me.martiandreamer.control.HistoryService;
 import me.martiandreamer.control.ScheduledCheckService;
 import me.martiandreamer.control.CommunicationService;
 import me.martiandreamer.model.AbsentDay;
@@ -31,6 +32,7 @@ public class AppRestResource {
     private final ObjectMapper objectMapper;
     private final AbsentDayService absentDayService;
     private final CommunicationService communicationService;
+    private final HistoryService historyService;
 
     @GET
     @Path("/config")
@@ -87,5 +89,11 @@ public class AppRestResource {
     @Path("/check-status")
     public Response checkStatus() {
         return Response.ok(communicationService.checkStatus()).build();
+    }
+
+    @GET
+    @Path("/history")
+    public Response getHistory() {
+        return Response.ok(historyService.readHistory()).build();
     }
 }

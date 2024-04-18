@@ -1,7 +1,8 @@
 {@me.martiandreamer.model.Configuration config}
 {@me.martiandreamer.control.ScheduledCheckService scheduledCheckService}
 {@me.martiandreamer.control.AbsentDayService absentDayService}
-{@me.martiandreamer.model.CheckStatus checkStatus}
+{@me.martiandreamer.control.HistoryService historyService}
+
 <html lang="en-US">
 <head>
     <meta charset="UTF-8">
@@ -102,7 +103,7 @@
             </div>
         </div>
     </div>
-    <div style="padding: 10px">
+    <div style="padding: 10px; margin-right: 10px">
         <div class="title">Absent days</div>
         {#for absentDay in absentDayService.getAbsentDays()}
             <div class="info">
@@ -124,6 +125,14 @@
                 Add
             </div>
         </div>
+    </div>
+    <div style="padding: 10px">
+        <div class="title">Weekly check history</div>
+        {#for history in historyService.readStringHistory()}
+            <div class="info">
+                Work for {history.get(3)} from {history.get(2)} to {history.get(1)} in {history.get(0)}
+            </div>
+        {/for}
     </div>
 </div>
 </body>
