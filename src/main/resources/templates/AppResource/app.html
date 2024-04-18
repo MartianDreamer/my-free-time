@@ -84,8 +84,12 @@
         </div>
         <div class="info">Check in at {intime}</div>
         <div class="info">Check out at {outtime}</div>
-        <div class="info">Scheduled check in at {appService.getNextCheckinInvocationString()}</div>
-        <div class="info">Scheduled check out at {appService.getNextCheckoutInvocationString()}</div>
+        {#if appService.getNextCheckinInvocationString() != null}
+            <div class="info">Scheduled check in at {appService.getNextCheckinInvocationString()}</div>
+        {/if}
+        {#if appService.getNextCheckoutInvocationString() != null}
+            <div class="info">Scheduled check out at {appService.getNextCheckoutInvocationString()}</div>
+        {/if}
         <div style="margin-top: 20px; display: flex">
             <div class="button green" onclick="start()">
                 Start

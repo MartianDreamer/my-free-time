@@ -157,24 +157,24 @@ public class AppService {
         return result;
     }
 
-    public boolean isPerformingCheckin() {
+    private boolean isPerformingCheckin() {
         return checkinScheduledFuture != null && (!checkinScheduledFuture.isCancelled() && !checkinScheduledFuture.isDone());
     }
 
-    public boolean isPerformingCheckout() {
+    private boolean isPerformingCheckout() {
         return checkoutScheduledFuture != null && (!checkoutScheduledFuture.isCancelled() && !checkoutScheduledFuture.isDone());
     }
 
     public String getNextCheckinInvocationString() {
         if (nextCheckinInvocation == null) {
-            return "not check in";
+            return null;
         }
         return nextCheckinInvocation.format(DATE_TIME_FORMATTER);
     }
 
     public String getNextCheckoutInvocationString() {
         if (nextCheckoutInvocation == null) {
-            return "not check out";
+            return null;
         }
         return nextCheckoutInvocation.format(DATE_TIME_FORMATTER);
     }
