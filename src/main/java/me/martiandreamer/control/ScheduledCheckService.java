@@ -1,17 +1,16 @@
 package me.martiandreamer.control;
 
-import me.martiandreamer.model.AbsentDay;
-import me.martiandreamer.model.CheckInCheckOutTime;
-import me.martiandreamer.model.CheckStatus;
-import me.martiandreamer.model.Configuration;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import me.martiandreamer.model.AbsentDay;
+import me.martiandreamer.model.CheckInCheckOutTime;
+import me.martiandreamer.model.CheckStatus;
+import me.martiandreamer.model.Configuration;
 
-import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,6 +26,7 @@ import java.util.function.Supplier;
 
 import static me.martiandreamer.model.AbsentDay.AbsentType.AFTERNOON;
 import static me.martiandreamer.model.AbsentDay.AbsentType.MORNING;
+import static me.martiandreamer.util.PublicOffDay.isSaturdayOrSunday;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -82,13 +82,13 @@ public class ScheduledCheckService {
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     private void doCheckinAndRescheduleJob() {
         long randomVariant = Math.round(Math.random() * configuration.getMaxVariantInMinus() * 60L);
-        if (isNotSaturdayAndSunday() && absentDayService.isNotAbsentDay() && configuration.getCheckin()) {
+        if (!isSaturdayOrSunday() && !absentDayService.isAbsentDay() && configuration.getCheckin()) {
             CheckStatus currentStatus = communicationService.checkStatus();
             if (currentStatus.intime() == 0) {
                 communicationService.check();
             }
         }
-        if (!absentDayService.isNotAbsentDay()) {
+        if (absentDayService.isAbsentDay()) {
             AbsentDay absentDay = absentDayService.getAbsentDay(LocalDateTime.now()).get();
             if (absentDay.type().equals(MORNING)) {
                 LocalDateTime at1Pm30Today = LocalDate.now().atTime(13, 30);
@@ -105,7 +105,7 @@ public class ScheduledCheckService {
 
     private void doCheckoutAndRescheduleJob() {
         long randomVariant = Math.round(Math.random() * configuration.getMaxVariantInMinus() * 60L);
-        if (isNotSaturdayAndSunday() && absentDayService.isNotAbsentDay() && configuration.getCheckout()) {
+        if (!isSaturdayOrSunday() && !absentDayService.isAbsentDay() && configuration.getCheckout()) {
             CheckStatus currentStatus = communicationService.checkStatus();
             if (currentStatus.intime() != 0) {
                 communicationService.check();
@@ -136,11 +136,6 @@ public class ScheduledCheckService {
         scheduledFutureSetter.accept(newScheduledFuture);
         nextInvocationLocalDateTimeSetter.accept(LocalDateTime.now().plusSeconds(nextInvocationDelay));
     }
-
-    private boolean isNotSaturdayAndSunday() {
-        return !LocalDate.now().getDayOfWeek().equals(DayOfWeek.SATURDAY) && !LocalDate.now().getDayOfWeek().equals(DayOfWeek.SUNDAY);
-    }
-
 
     private long calculateNextInvocationDelay(LocalDateTime expectedDayMoment) {
         LocalDateTime now = LocalDateTime.now();

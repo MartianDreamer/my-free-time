@@ -38,9 +38,9 @@ public class AbsentDayService {
         });
     }
 
-    public boolean isNotAbsentDay() {
+    public boolean isAbsentDay() {
         LocalDateTime now = LocalDateTime.now();
-        return absentDays.stream().noneMatch(e -> e.contains(now));
+        return absentDays.stream().anyMatch(e -> e.contains(now));
     }
 
     public Optional<AbsentDay> getAbsentDay(LocalDateTime localDateTime) {

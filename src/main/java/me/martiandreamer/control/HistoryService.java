@@ -16,10 +16,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static me.martiandreamer.util.PublicOffDay.isSaturdayOrSunday;
+
 @ApplicationScoped
 @RequiredArgsConstructor
 public class HistoryService {
     private final CommunicationService communicationService;
+    private final AbsentDayService absentDayService;
     private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     private final List<CheckInCheckOutTime> historyQueue = new LinkedList<>();
 
@@ -39,7 +42,13 @@ public class HistoryService {
     }
 
     private void writeHistory() {
+        if (absentDayService.isAbsentDay() || isSaturdayOrSunday()) {
+            return;
+        }
         CheckStatus checkStatus = communicationService.checkStatus();
+        if (checkStatus.intime() == 0) {
+            return;
+        }
         LocalDateTime checkin = LocalDate.now().atStartOfDay().plusSeconds(checkStatus.intime());
         LocalDateTime checkout = LocalDate.now().atStartOfDay().plusSeconds(checkStatus.outtime());
         double totalWorkingHour = Duration.between(checkin, checkout).get(ChronoUnit.SECONDS) / 3600d;

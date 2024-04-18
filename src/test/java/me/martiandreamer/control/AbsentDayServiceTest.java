@@ -17,10 +17,10 @@ class AbsentDayServiceTest {
     AbsentDayService absentDayService;
 
     @Test
-    void isNotAbsentDay() {
-        assertTrue(absentDayService.isNotAbsentDay());
+    void isAbsentDay() {
+        assertFalse(absentDayService.isAbsentDay());
         absentDayService.add(new AbsentDay(LocalDate.now(), AbsentDay.AbsentType.FULL));
-        assertFalse(absentDayService.isNotAbsentDay());
+        assertTrue(absentDayService.isAbsentDay());
     }
 
     @Test
