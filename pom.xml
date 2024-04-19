@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.martiandreamer</groupId>
     <artifactId>my-free-time</artifactId>
-    <version>1.2.0RC2</version>
+    <version>1.2.0</version>
 
     <properties>
         <compiler-plugin.version>3.12.1</compiler-plugin.version>

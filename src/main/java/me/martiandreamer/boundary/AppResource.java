@@ -14,6 +14,7 @@ import me.martiandreamer.control.HistoryService;
 import me.martiandreamer.control.ScheduledCheckService;
 import me.martiandreamer.model.CheckStatus;
 import me.martiandreamer.model.Configuration;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -22,6 +23,8 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 public class AppResource {
 
+    @ConfigProperty(name = "quarkus.application.version")
+    String version;
     private final Configuration configuration;
     private final ScheduledCheckService scheduledCheckService;
     private final AbsentDayService absentDayService;
@@ -31,7 +34,7 @@ public class AppResource {
 
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance app(Configuration config, ScheduledCheckService scheduledCheckService, AbsentDayService absentDayService, HistoryService historyService, String intime, String outtime, String workingHour);
+        public static native TemplateInstance app(Configuration config, ScheduledCheckService scheduledCheckService, AbsentDayService absentDayService, HistoryService historyService, String intime, String outtime, String workingHour, String version);
     }
 
     @GET
@@ -42,6 +45,6 @@ public class AppResource {
         String intime = LocalDate.now().atStartOfDay().plusSeconds(checkStatus.intime()).format(DATE_TIME_FORMATTER);
         String outtime = LocalDate.now().atStartOfDay().plusSeconds(checkStatus.outtime()).format(DATE_TIME_FORMATTER);
         String workingHourStr = String.format("%.2f", checkStatus.getWorkingHour());
-        return Templates.app(configuration, scheduledCheckService, absentDayService, historyService, intime, outtime, workingHourStr);
+        return Templates.app(configuration, scheduledCheckService, absentDayService, historyService, intime, outtime, workingHourStr, version);
     }
 }
