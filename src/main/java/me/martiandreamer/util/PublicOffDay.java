@@ -70,10 +70,6 @@ public final class PublicOffDay {
     }
 
     private static boolean isCompensationDay() {
-        if (compensation > 0) {
-            compensation--;
-            return true;
-        }
-        return false;
+        return !(compensation == 0) && compensation-- > 0;
     }
 }
