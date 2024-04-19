@@ -29,6 +29,8 @@ public class Configuration {
     @ConfigProperty(name = "quarkus.http.port")
     String port;
     String email;
+    @Setter
+    private Boolean reCheckOut = true;
 
     public void setMaxVariantInMinus(int maxVariantInMinus) {
         if (maxVariantInMinus < 0) {
@@ -81,6 +83,7 @@ public class Configuration {
             checkAndSet(this::setCheckin, configuration.getCheckin());
             checkAndSet(this::setCheckout, configuration.getCheckout());
             checkAndSet(this::setEmail, configuration.getEmail());
+            checkAndSet(this::setReCheckOut, configuration.getReCheckOut());
         }
         return this;
     }

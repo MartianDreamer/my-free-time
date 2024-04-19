@@ -15,7 +15,7 @@ public record CheckStatus(String previousAction,
                           String informMessages,
                           int type
 ) {
-
+    public static final String CHECKOUT = "CHECKOUT";
     @SuppressWarnings("ReassignedVariable")
     public double getWorkingHour() {
         if (intime == 0) return 0;

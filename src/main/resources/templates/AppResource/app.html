@@ -74,10 +74,16 @@
 <div style="display: flex">
     <div style="margin-right: 10px; padding: 10px">
         <div class="title">Config values</div>
-        <div class="margin"><label for="checkin">Checkin </label><input id="checkin" type="checkbox"
-                                                                        {#if config.getCheckin()}checked{/if}/></div>
-        <div class="margin"><label for="checkout">Checkout </label><input id="checkout" type="checkbox"
-                                                                          {#if config.getCheckout()}checked{/if}/></div>
+        <div class="margin"><label for="checkin">Checkin (Be careful!!!) </label><input id="checkin" type="checkbox"
+                                                                                        {#if config.getCheckin()}checked{/if}/>
+        </div>
+        <div class="margin"><label for="checkout">Checkout (Safe to use) </label><input id="checkout" type="checkbox"
+                                                                                        {#if config.getCheckout()}checked{/if}/>
+        </div>
+        <div class="margin"><label for="checkout">Re-checkout (co iff you don't co) </label><input id="checkout"
+                                                                                                   type="checkbox"
+                                                                                                   {#if config.getCheckout()}checked{/if}/>
+        </div>
         <div class="margin"><label for="checkinBefore">Checkin before: </label><input id="checkinBefore" type="text"
                                                                                       value="{config.getCheckinBeforeH()}:{config.getCheckinBeforeM()}"/>
         </div>
@@ -88,7 +94,7 @@
                                                                                       value="{config.getMaxVariantInMinus()}"/>
         </div>
         <div class="margin"><label for="email">Email: </label><input id="email" type="text"
-                                                                                      value="{config.getEmail()}"/>
+                                                                     value="{config.getEmail()}"/>
         </div>
         {#if ! intime.equals("00:00")}
             <div class="info">Check in at {intime}</div>
@@ -113,7 +119,7 @@
                 Stop
             </div>
             <div class="button yellow" onclick="updateConfig()">
-                Update
+                Config
             </div>
             <div class="button blue" onclick="check()">
                 Check

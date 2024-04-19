@@ -111,7 +111,7 @@ public class ScheduledCheckService {
         long randomVariant = Math.round(Math.random() * configuration.getMaxVariantInMinus() * 60L);
         if (configuration.getCheckout()) {
             CheckStatus currentStatus = communicationService.checkStatus();
-            if (currentStatus.intime() != 0) {
+            if (currentStatus.intime() != 0 && (configuration.getReCheckOut() || !currentStatus.previousAction().equals(CheckStatus.CHECKOUT))) {
                 communicationService.check();
                 mailerService.sendCheckMail(CHECKOUT);
             }
