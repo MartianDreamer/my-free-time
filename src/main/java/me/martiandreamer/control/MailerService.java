@@ -19,6 +19,9 @@ public class MailerService {
     private final CommunicationService communicationService;
 
     public void sendCheckMail(Action action) {
+        if (configuration.getEmail().isEmpty()) {
+            return;
+        }
         String now = LocalDateTime.now().format(ScheduledCheckService.DATE_TIME_FORMATTER);
         try {
             mailer.send(
