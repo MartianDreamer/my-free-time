@@ -28,7 +28,6 @@ public class Configuration {
     Integer checkoutAfterM;
     @ConfigProperty(name = "quarkus.http.port")
     String port;
-    @ConfigProperty(name = "my-free-time.config.email", defaultValue = "")
     String email;
 
     public void setMaxVariantInMinus(int maxVariantInMinus) {
