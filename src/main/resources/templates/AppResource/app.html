@@ -116,6 +116,7 @@
                 Check
             </div>
         </div>
+        <div class="info">v{version}</div>
     </div>
     <div style="padding: 10px; margin-right: 10px">
         <div class="title">Absent days</div>
@@ -216,7 +217,7 @@
             method: "GET",
             mode: "no-cors"
         })
-            .finally(location.reload)
+            .finally(() => location.reload());
     }
 
     function addAbsentDay() {
