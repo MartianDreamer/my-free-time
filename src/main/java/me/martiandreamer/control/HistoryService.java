@@ -9,7 +9,6 @@ import me.martiandreamer.model.CheckStatus;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -51,7 +50,7 @@ public class HistoryService {
         }
         LocalDateTime checkin = LocalDate.now().atStartOfDay().plusSeconds(checkStatus.intime());
         LocalDateTime checkout = LocalDate.now().atStartOfDay().plusSeconds(checkStatus.outtime());
-        double totalWorkingHour = Duration.between(checkin, checkout).get(ChronoUnit.SECONDS) / 3600d;
+        double totalWorkingHour = (checkStatus.outtime() - checkStatus.intime()) / 3600d;
         if (historyQueue.size() == 7) {
             historyQueue.removeLast();
         }
