@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static me.martiandreamer.util.PublicOffDay.isSaturdayOrSunday;
+import static me.martiandreamer.util.PublicOffDay.isPublicOffDay;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -43,7 +43,7 @@ public class HistoryService {
 
     @SuppressWarnings("ReassignedVariable")
     private void writeHistory() {
-        if (absentDayService.isAbsentDay() || isSaturdayOrSunday()) {
+        if (absentDayService.isAbsentDay() || isPublicOffDay()) {
             return;
         }
         CheckStatus checkStatus = communicationService.checkStatus();

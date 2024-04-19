@@ -28,7 +28,7 @@ import static me.martiandreamer.control.MailerService.Action.CHECKIN;
 import static me.martiandreamer.control.MailerService.Action.CHECKOUT;
 import static me.martiandreamer.model.AbsentDay.AbsentType.AFTERNOON;
 import static me.martiandreamer.model.AbsentDay.AbsentType.MORNING;
-import static me.martiandreamer.util.PublicOffDay.isSaturdayOrSunday;
+import static me.martiandreamer.util.PublicOffDay.isPublicOffDay;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -85,7 +85,7 @@ public class ScheduledCheckService {
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     private void doCheckinAndRescheduleJob() {
         long randomVariant = Math.round(Math.random() * configuration.getMaxVariantInMinus() * 60L);
-        if (!isSaturdayOrSunday() && !absentDayService.isAbsentDay() && configuration.getCheckin()) {
+        if (!isPublicOffDay() && !absentDayService.isAbsentDay() && configuration.getCheckin()) {
             CheckStatus currentStatus = communicationService.checkStatus();
             if (currentStatus.intime() == 0) {
                 communicationService.check();
@@ -109,7 +109,7 @@ public class ScheduledCheckService {
 
     private void doCheckoutAndRescheduleJob() {
         long randomVariant = Math.round(Math.random() * configuration.getMaxVariantInMinus() * 60L);
-        if (!isSaturdayOrSunday() && !absentDayService.isAbsentDay() && configuration.getCheckout()) {
+        if (configuration.getCheckout()) {
             CheckStatus currentStatus = communicationService.checkStatus();
             if (currentStatus.intime() != 0) {
                 communicationService.check();
