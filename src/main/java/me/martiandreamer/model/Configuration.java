@@ -66,10 +66,9 @@ public class Configuration {
     }
 
     public void setEmail(String email) {
-        if (!email.matches(".+@.+[.].+")) {
-            throw new IllegalArgumentException("Invalid email format");
+        if (email.matches(".+@.+[.].+")) {
+            this.email = email;
         }
-        this.email = email;
     }
 
     public Configuration update(Configuration configuration) {
