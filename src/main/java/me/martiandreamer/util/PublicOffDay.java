@@ -1,13 +1,16 @@
 package me.martiandreamer.util;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 
 @ApplicationScoped
-public class PublicOffDay {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class PublicOffDay {
 
     private static int compensation = 0;
     private static int countCheck = 0;
