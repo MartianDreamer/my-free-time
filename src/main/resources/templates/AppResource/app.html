@@ -87,6 +87,9 @@
         <div class="margin"><label for="variant">Max variant in minus: </label><input id="variant" type="text"
                                                                                       value="{config.getMaxVariantInMinus()}"/>
         </div>
+        <div class="margin"><label for="email">Email: </label><input id="email" type="text"
+                                                                                      value="{config.getEmail()}"/>
+        </div>
         {#if ! intime.equals("00:00")}
             <div class="info">Check in at {intime}</div>
         {/if}
@@ -184,6 +187,7 @@
         const [checkoutAfterH, checkoutAfterM] = splitTime(document.getElementById("checkoutAfter").value);
         const checkin = document.getElementById("checkin").checked;
         const checkout = document.getElementById("checkout").checked;
+        const email = document.getElementById("email").value;
         const body = {
             maxVariantInMinus,
             checkin,
@@ -191,7 +195,8 @@
             checkinBeforeH,
             checkinBeforeM,
             checkoutAfterH,
-            checkoutAfterM
+            checkoutAfterM,
+            email
         }
 
         console.log(body);

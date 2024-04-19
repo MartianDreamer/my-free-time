@@ -45,7 +45,7 @@ public class CommunicationService {
     }
 
     @SuppressWarnings("ReassignedVariable")
-    private String getWindowsAccount() {
+    public String getWindowsAccount() {
         String username = System.getProperty("user.name");
         if (username == null) {
             username = System.getProperty("user_name");

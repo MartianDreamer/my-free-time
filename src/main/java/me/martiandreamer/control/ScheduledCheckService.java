@@ -24,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static me.martiandreamer.control.MailerService.Action.CHECKIN;
+import static me.martiandreamer.control.MailerService.Action.CHECKOUT;
 import static me.martiandreamer.model.AbsentDay.AbsentType.AFTERNOON;
 import static me.martiandreamer.model.AbsentDay.AbsentType.MORNING;
 import static me.martiandreamer.util.PublicOffDay.isSaturdayOrSunday;
@@ -35,6 +37,7 @@ public class ScheduledCheckService {
     private final Configuration configuration;
     private final CommunicationService communicationService;
     private final AbsentDayService absentDayService;
+    private final MailerService mailerService;
     private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
@@ -86,6 +89,7 @@ public class ScheduledCheckService {
             CheckStatus currentStatus = communicationService.checkStatus();
             if (currentStatus.intime() == 0) {
                 communicationService.check();
+                mailerService.sendCheckMail(CHECKIN);
             }
         }
         if (absentDayService.isAbsentDay()) {
@@ -109,6 +113,7 @@ public class ScheduledCheckService {
             CheckStatus currentStatus = communicationService.checkStatus();
             if (currentStatus.intime() != 0) {
                 communicationService.check();
+                mailerService.sendCheckMail(CHECKOUT);
             }
         }
         LocalDate tomorrow = LocalDate.now().plusDays(1);

@@ -17,3 +17,12 @@ quarkus:
   rest-client:
     mytime:
       uri: ${mytime_ws_url}
+  mailer:
+    auth-methods: DIGEST-MD5 CRAM-SHA256 CRAM-SHA1 CRAM-MD5 PLAIN LOGIN
+    from: ${mailer_email}
+    host: smtp.gmail.com
+    port: 587
+    start-tls: required
+    username: ${mailer_email}
+    password: ${mailer_pw}
+    mock: false

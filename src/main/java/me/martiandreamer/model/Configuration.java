@@ -28,6 +28,8 @@ public class Configuration {
     Integer checkoutAfterM;
     @ConfigProperty(name = "quarkus.http.port")
     String port;
+    @ConfigProperty(name = "my-free-time.config.email", defaultValue = "")
+    String email;
 
     public void setMaxVariantInMinus(int maxVariantInMinus) {
         if (maxVariantInMinus < 0) {
@@ -64,6 +66,13 @@ public class Configuration {
         this.checkoutAfterM = checkoutAfterM;
     }
 
+    public void setEmail(String email) {
+        if (!email.matches(".+@.+[.].+")) {
+            throw new IllegalArgumentException("Invalid email format");
+        }
+        this.email = email;
+    }
+
     public Configuration update(Configuration configuration) {
         if (configuration != null) {
             checkAndSet(this::setMaxVariantInMinus, configuration.getMaxVariantInMinus());
@@ -73,6 +82,7 @@ public class Configuration {
             checkAndSet(this::setCheckoutAfterM, configuration.getCheckoutAfterM());
             checkAndSet(this::setCheckin, configuration.getCheckin());
             checkAndSet(this::setCheckout, configuration.getCheckout());
+            checkAndSet(this::setEmail, configuration.getEmail());
         }
         return this;
     }
