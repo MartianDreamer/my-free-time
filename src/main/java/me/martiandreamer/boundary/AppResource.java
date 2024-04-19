@@ -16,7 +16,6 @@ import me.martiandreamer.model.CheckStatus;
 import me.martiandreamer.model.Configuration;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 @Path("/")
@@ -42,12 +41,7 @@ public class AppResource {
         CheckStatus checkStatus = communicationService.checkStatus();
         String intime = LocalDate.now().atStartOfDay().plusSeconds(checkStatus.intime()).format(DATE_TIME_FORMATTER);
         String outtime = LocalDate.now().atStartOfDay().plusSeconds(checkStatus.outtime()).format(DATE_TIME_FORMATTER);
-        double workingHour = (checkStatus.outtime() - checkStatus.intime()) / 3600d;
-        if (workingHour < 0) {
-            long now = LocalTime.now().toSecondOfDay();
-            workingHour = (now - checkStatus.intime()) / 3600d;
-        }
-        String workingHourStr = String.format("%.2f", workingHour);
+        String workingHourStr = String.format("%.2f", checkStatus.getWorkingHour());
         return Templates.app(configuration, scheduledCheckService, absentDayService, historyService, intime, outtime, workingHourStr);
     }
 }

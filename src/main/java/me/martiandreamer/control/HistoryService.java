@@ -9,6 +9,7 @@ import me.martiandreamer.model.CheckStatus;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -40,6 +41,7 @@ public class HistoryService {
         scheduledExecutorService.scheduleAtFixedRate(this::writeHistory, durationBetween, 24 * 60 * 60, TimeUnit.SECONDS);
     }
 
+    @SuppressWarnings("ReassignedVariable")
     private void writeHistory() {
         if (absentDayService.isAbsentDay() || isSaturdayOrSunday()) {
             return;
@@ -50,7 +52,15 @@ public class HistoryService {
         }
         LocalDateTime checkin = LocalDate.now().atStartOfDay().plusSeconds(checkStatus.intime());
         LocalDateTime checkout = LocalDate.now().atStartOfDay().plusSeconds(checkStatus.outtime());
-        double totalWorkingHour = (checkStatus.outtime() - checkStatus.intime()) / 3600d;
+        double totalWorkingHour = (checkStatus.outtime() - checkStatus.intime() - 5400) / 3600d;
+        if (checkin.isAfter(LocalDate.now().atTime(10, 0))) {
+            long at130pm = LocalTime.of(13, 30).toSecondOfDay();
+            totalWorkingHour = (checkStatus.outtime() - at130pm) / 3600d;
+        }
+        if (checkout.isBefore(LocalDate.now().atTime(13, 30))) {
+            long at12pm = LocalTime.of(12, 0).toSecondOfDay();
+            totalWorkingHour = (at12pm - checkStatus.intime()) / 3600d;
+        }
         if (historyQueue.size() == 7) {
             historyQueue.removeLast();
         }

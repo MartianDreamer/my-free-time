@@ -93,7 +93,9 @@
         {#if ! outtime.equals("00:00")}
             <div class="info">Check out at {outtime}</div>
         {/if}
-        <div class="info">Working hour: {workingHour}</div>
+        {#if ! workingHour.equals("0.00")}
+            <div class="info">Working hour: {workingHour}</div>
+        {/if}
         {#if scheduledCheckService.getNextCheckinInvocationString() != null}
             <div class="info">Scheduled check in at {scheduledCheckService.getNextCheckinInvocationString()}</div>
         {/if}
