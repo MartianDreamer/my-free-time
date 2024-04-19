@@ -13,5 +13,4 @@ public record CheckStatus(String previousAction,
                           String informMessages,
                           int type
 ) {
-    public static String CHECKIN = "CHECKIN";
 }
