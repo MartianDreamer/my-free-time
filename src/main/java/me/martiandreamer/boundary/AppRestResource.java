@@ -96,4 +96,11 @@ public class AppRestResource {
     public Response getHistory() {
         return Response.ok(historyService.readHistory()).build();
     }
+
+    @GET
+    @Path("/check")
+    public Response check() {
+        communicationService.check();
+        return Response.ok().build();
+    }
 }
