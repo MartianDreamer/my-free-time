@@ -13,8 +13,6 @@ import java.time.Month;
 public final class PublicOffDay {
 
     private static int compensation = 0;
-    private static int countCheck = 0;
-    private static final int NUMBER_OF_SERVICE_CHECK_COMPENSATE = 2;
 
     public static boolean isPublicOffDay() {
         return isPublicHoliday(1, Month.JANUARY)
@@ -72,14 +70,10 @@ public final class PublicOffDay {
     }
 
     private static boolean isCompensationDay() {
-        countCheck++;
-        if (countCheck == NUMBER_OF_SERVICE_CHECK_COMPENSATE) {
-            countCheck = 0;
-            if (compensation > 0) {
-                compensation--;
-                return true;
-            }
+        if (compensation > 0) {
+            compensation--;
+            return true;
         }
-        return compensation > 0;
+        return false;
     }
 }
