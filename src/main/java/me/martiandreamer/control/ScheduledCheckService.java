@@ -85,7 +85,7 @@ public class ScheduledCheckService {
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     private void doCheckinAndRescheduleJob() {
         long randomVariant = Math.round(Math.random() * configuration.getMaxVariantInMinus() * 60L);
-        if (!isPublicOffDay() && !absentDayService.isAbsentDay() && configuration.getCheckin()) {
+        if (!absentDayService.isAbsentDay() && !isPublicOffDay() && configuration.getCheckin()) {
             CheckStatus currentStatus = communicationService.checkStatus();
             if (currentStatus.intime() == 0) {
                 communicationService.check();
