@@ -22,8 +22,14 @@ public class CommunicationService {
 
 
     public void check() {
-        EmployeeInfo employeeInfo = getEmployeeInfo();
-        myTimeAdapter.checkInOut(employeeInfo.id(), employeeInfo.token());
+        try {
+            EmployeeInfo employeeInfo = getEmployeeInfo();
+            myTimeAdapter.checkInOut(employeeInfo.id(), employeeInfo.token());
+        } catch (Exception e) {
+            refreshEmployeeInfo();
+            EmployeeInfo employeeInfo = getEmployeeInfo();
+            myTimeAdapter.checkInOut(employeeInfo.id(), employeeInfo.token());
+        }
     }
 
 
@@ -31,12 +37,7 @@ public class CommunicationService {
         if (employeeInfo != null) {
             return employeeInfo;
         }
-        String user = getWindowsAccount();
-        List<String> response = myTimeAdapter.getAccessTokenOfAnEmployee(user);
-        if (response.size() < 2) {
-            throw new RuntimeException("unexpected response");
-        }
-        employeeInfo = new EmployeeInfo(response.get(0), response.get(1));
+        refreshEmployeeInfo();
         return employeeInfo;
     }
 
@@ -51,5 +52,14 @@ public class CommunicationService {
             username = System.getProperty("user_name");
         }
         return username;
+    }
+
+    public void refreshEmployeeInfo() {
+        String user = getWindowsAccount();
+        List<String> response = myTimeAdapter.getAccessTokenOfAnEmployee(user);
+        if (response.size() < 2) {
+            throw new RuntimeException("unexpected response");
+        }
+        employeeInfo = new EmployeeInfo(response.get(0), response.get(1));
     }
 }
