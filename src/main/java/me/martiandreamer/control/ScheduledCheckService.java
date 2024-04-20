@@ -119,7 +119,7 @@ public class ScheduledCheckService {
         LocalDate tomorrow = LocalDate.now().plusDays(1);
         LocalDateTime tomorrowInvocationTime = tomorrow.atTime(configuration.getCheckoutAfterH(), configuration.getCheckoutAfterM());
         Optional<AbsentDay> optionalAbsentTomorrow = absentDayService.getAbsentDay(tomorrowInvocationTime);
-        if (optionalAbsentTomorrow.isPresent()) {
+        if (!absentDayService.isAbsentDay() && !isPublicOffDay() && optionalAbsentTomorrow.isPresent()) {
             AbsentDay absentTomorrow = optionalAbsentTomorrow.get();
             if (absentTomorrow.type().equals(AFTERNOON)) {
                 LocalDateTime at12PmTomorrow = tomorrow.atTime(12, 0);
