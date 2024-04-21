@@ -18,6 +18,6 @@ class MailerServiceTest {
     @Test
     void doNotCrash_givenNotConfigEmailSender() {
         configuration.setEmail("no_email@nomail.com");
-        assertDoesNotThrow(() -> mailerService.sendCheckMail(MailerService.Action.CHECKOUT));
+        assertDoesNotThrow(() -> mailerService.sendCheckinMail());
     }
 }

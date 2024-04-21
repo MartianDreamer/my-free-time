@@ -3,11 +3,14 @@ package me.martiandreamer.control;
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
 import jakarta.enterprise.context.ApplicationScoped;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.martiandreamer.model.CheckInCheckOutTime;
+import me.martiandreamer.model.CheckStatus;
 import me.martiandreamer.model.Configuration;
+import me.martiandreamer.util.TimeCalculation;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @ApplicationScoped
@@ -18,7 +21,7 @@ public class MailerService {
     private final Configuration configuration;
     private final CommunicationService communicationService;
 
-    public void sendCheckMail(Action action) {
+    public void sendCheckinMail() {
         if (configuration.getEmail() == null) {
             return;
         }
@@ -26,23 +29,39 @@ public class MailerService {
         try {
             mailer.send(
                     Mail.withText(configuration.getEmail(),
-                            "You " + action.getAction() + " at " + now + ".",
+                            "NO REPLY - You checked in at " + now + ".",
                             "Dear " + communicationService.getWindowsAccount() + ",\n" +
-                                    "You " + action.getAction() + " at " + now + ".\n\n" +
+                                    "You checked in at " + now + ".\n\n" +
                                     "Regards,\n" +
                                     "Your free time.")
             );
         } catch (RuntimeException e) {
-            log.error("failed to send check mail", e);
+            log.error("failed to send check in mail", e);
         }
     }
 
-    @RequiredArgsConstructor
-    @Getter
-    public enum Action {
-        CHECKIN("checked in"), CHECKOUT("checked out");
-
-        private final String action;
-
+    public void sendCheckoutMail(CheckStatus checkStatus) {
+        if (configuration.getEmail() == null) {
+            return;
+        }
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startOfDay = now.toLocalDate().atStartOfDay();
+        long outtime = Duration.between(startOfDay, now).toSeconds();
+        String nowString = now.format(ScheduledCheckService.DATE_TIME_FORMATTER);
+        CheckInCheckOutTime checkInCheckOutTime = TimeCalculation.calculateWorkingHour(checkStatus.intime(), outtime);
+        try {
+            mailer.send(
+                    Mail.withText(configuration.getEmail(),
+                            "NO REPLY - You checked out at " + nowString + ".",
+                            "Dear " + communicationService.getWindowsAccount() + ",\n" +
+                                    "You checked out at " + nowString + ".\n" +
+                                    "You worked for " + checkInCheckOutTime.totalWorkingHour() + ".\n\n" +
+                                    "Regards,\n" +
+                                    "Your free time.")
+            );
+        } catch (RuntimeException e) {
+            log.error("failed to send check out mail", e);
+        }
     }
+
 }
