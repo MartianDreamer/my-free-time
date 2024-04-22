@@ -49,13 +49,14 @@ public class MailerService {
         long outtime = Duration.between(startOfDay, now).toSeconds();
         String nowString = now.format(ScheduledCheckService.DATE_TIME_FORMATTER);
         CheckInCheckOutTime checkInCheckOutTime = TimeCalculation.calculateWorkingHour(checkStatus.intime(), outtime);
+        String workingHour = String.format("%.2f", checkInCheckOutTime.totalWorkingHour());
         try {
             mailer.send(
                     Mail.withText(configuration.getEmail(),
                             "NO REPLY - You checked out at " + nowString + ".",
                             "Dear " + communicationService.getWindowsAccount() + ",\n" +
                                     "You checked out at " + nowString + ".\n" +
-                                    "You worked for " + checkInCheckOutTime.totalWorkingHour() + ".\n\n" +
+                                    "You worked for " + workingHour + " hours.\n\n" +
                                     "Regards,\n" +
                                     "Your free time.")
             );
