@@ -14,6 +14,8 @@
     <style>
         .margin {
             margin: 8px;
+            display: flex;
+            justify-content: space-between;
         }
 
         body {
@@ -74,13 +76,13 @@
 <div style="display: flex">
     <div style="margin-right: 10px; padding: 10px">
         <div class="title">Config values</div>
-        <div class="margin"><label for="checkin">Checkin (Be careful!!!) </label><input id="checkin" type="checkbox"
+        <div class="margin"><label for="checkin">Checkin(Be careful!!!): </label><input id="checkin" type="checkbox"
                                                                                         {#if config.getCheckin()}checked{/if}/>
         </div>
-        <div class="margin"><label for="checkout">Checkout (Safe to use) </label><input id="checkout" type="checkbox"
+        <div class="margin"><label for="checkout">Checkout(Safe to use): </label><input id="checkout" type="checkbox"
                                                                                         {#if config.getCheckout()}checked{/if}/>
         </div>
-        <div class="margin"><label for="checkout">Re-checkout (co iff you don't co) </label><input id="checkout"
+        <div class="margin"><label for="checkout">Re-checkout(co iff you don't co): </label><input id="checkout"
                                                                                                    type="checkbox"
                                                                                                    {#if config.getCheckout()}checked{/if}/>
         </div>
