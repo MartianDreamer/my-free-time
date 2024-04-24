@@ -123,9 +123,13 @@
             <div class="button yellow" onclick="updateConfig()">
                 Config
             </div>
-            <div class="button blue" onclick="check()">
+            <div class="button blue" id="show-check" onclick="showCheck()">
+                Show check
+            </div>
+            <div class="button blue" id="check" style="display: none" onclick="check()">
                 Check
             </div>
+
         </div>
         <div class="info">v{version}</div>
     </div>
@@ -246,6 +250,17 @@
             mode: 'no-cors'
         })
             .finally(() => location.reload());
+        document.getElementById("show-check").style.display = "block"
+        document.getElementById("check").style.display = "none"
+    }
+
+    function showCheck() {
+        document.getElementById("show-check").style.display = "none"
+        document.getElementById("check").style.display = "block"
+        setTimeout(() => {
+            document.getElementById("show-check").style.display = "block"
+            document.getElementById("check").style.display = "none"
+        }, 3000);
     }
 </script>
 </html>
