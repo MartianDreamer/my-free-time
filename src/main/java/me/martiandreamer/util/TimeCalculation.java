@@ -10,11 +10,15 @@ import me.martiandreamer.model.CheckInCheckOutTime;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TimeCalculation {
-    
+
     @SuppressWarnings("ReassignedVariable")
     public static CheckInCheckOutTime calculateWorkingHour(long intime, long outtime) {
         LocalDateTime checkin = LocalDate.now().atStartOfDay().plusSeconds(intime);
         LocalDateTime checkout = LocalDate.now().atStartOfDay().plusSeconds(outtime);
+        LocalDateTime at1930pm = LocalDate.now().atTime(19, 30);
+        if (checkout.isAfter(at1930pm)) {
+            checkout = at1930pm;
+        }
         double totalWorkingHour = (outtime - intime - 5400) / 3600d;
         if (checkin.isAfter(LocalDate.now().atTime(10, 0))) {
             long at130pm = LocalTime.of(13, 30).toSecondOfDay();
