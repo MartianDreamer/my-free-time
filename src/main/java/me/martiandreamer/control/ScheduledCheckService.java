@@ -56,7 +56,7 @@ public class ScheduledCheckService {
     public String start() {
         if (configuration.getCheckin() && !isPerformingCheckin()) {
             long randomVariant = Math.round(Math.random() * configuration.getMaxVariantInMinus() * 60L);
-            long nextInvocationDelay = calculateNextInvocationDelay(configuration.getCheckinBeforeH(), configuration.getCheckinBeforeM()) + randomVariant;
+            long nextInvocationDelay = calculateNextInvocationDelay(configuration.getCheckinBeforeH(), configuration.getCheckinBeforeM()) - randomVariant;
             setupNewScheduledTask(this::doCheckinAndRescheduleJob, nextInvocationDelay, this::getCheckinScheduledFuture, this::setCheckinScheduledFuture, this::setNextCheckinInvocation);
         }
         if (configuration.getCheckout() && !isPerformingCheckout()) {
