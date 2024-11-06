@@ -82,9 +82,9 @@
         <div class="margin"><label for="checkout">Checkout(Safe to use): </label><input id="checkout" type="checkbox"
                                                                                         {#if config.getCheckout()}checked{/if}/>
         </div>
-        <div class="margin"><label for="checkout">Re-checkout(co iff you don't co): </label><input id="checkout"
+        <div class="margin"><label for="re-checkout">Re-checkout(co iff you don't co): </label><input id="re-checkout"
                                                                                                    type="checkbox"
-                                                                                                   {#if config.getCheckout()}checked{/if}/>
+                                                                                                   {#if config.getReCheckOut()}checked{/if}/>
         </div>
         <div class="margin"><label for="checkinBefore">Checkin before: </label><input id="checkinBefore" type="text"
                                                                                       value="{config.getCheckinBeforeH()}:{config.getCheckinBeforeM()}"/>
@@ -199,11 +199,13 @@
         const [checkoutAfterH, checkoutAfterM] = splitTime(document.getElementById("checkoutAfter").value);
         const checkin = document.getElementById("checkin").checked;
         const checkout = document.getElementById("checkout").checked;
+        const reCheckOut = document.getElementById("re-checkout").checked;
         const email = document.getElementById("email").value;
         const body = {
             maxVariantInMinus,
             checkin,
             checkout,
+            reCheckOut,
             checkinBeforeH,
             checkinBeforeM,
             checkoutAfterH,
